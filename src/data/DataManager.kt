@@ -3,11 +3,11 @@ package com.pratthamarora.data
 import com.pratthamarora.data.model.Book
 
 class DataManager {
-    var books = ArrayList<Book>()
+    private var books = ArrayList<Book>()
 
     fun getId(): String = books.size.toString()
 
-    fun init() {
+    init {
         books.add(Book(getId(), "How to grow Apples", "Mr. Appleton", 100.0f))
         books.add(Book(getId(), "How to grow Oranges", "Mr. Orange", 200.0f))
         books.add(Book(getId(), "How to grow Lemons", "Mr. Lemon", 300.0f))
@@ -17,8 +17,9 @@ class DataManager {
         books.add(Book(getId(), "How to grow Bananas", "Mr. Appleton", 100.0f))
     }
 
-    fun addNewBook(book: Book) {
+    fun addNewBook(book: Book): Book {
         books.add(book)
+        return book
     }
 
     fun updateBook(book: Book): Book? {
@@ -42,5 +43,13 @@ class DataManager {
         books.remove(foundBook)
         return foundBook
     }
+    fun deleteBook(bookId: String): Book? {
+        val foundBook = books.find {
+            it.id == bookId
+        }
+        books.remove(foundBook)
+        return foundBook
+    }
 
+    fun allBooks(): List<Book> = books
 }
