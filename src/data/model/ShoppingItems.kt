@@ -1,4 +1,4 @@
-package com.pratthamarora.data
+package com.pratthamarora.data.model
 
 data class ShoppingItems(
     var bookId: String,

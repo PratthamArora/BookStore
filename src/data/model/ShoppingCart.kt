@@ -1,4 +1,4 @@
-package com.pratthamarora.data
+package com.pratthamarora.data.model
 
 data class ShoppingCart(
     var id: String,
