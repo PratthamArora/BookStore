@@ -31,7 +31,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.css.*
 import kotlinx.html.*
 import org.slf4j.event.Level
-import kotlin.collections.mapOf
 import kotlin.collections.set
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -45,8 +44,20 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    install(Locations){
+    install(StatusPages) {
+        exception<Throwable> {
+            call.respond(HttpStatusCode.InternalServerError)
+            throw it
+        }
+        exception<AuthenticationException> {
+            call.respond(HttpStatusCode.Unauthorized)
+        }
+        exception<AuthorizationException> {
+            call.respond(HttpStatusCode.Forbidden)
+        }
+    }
 
+    install(Locations) {
     }
 
     install(CallLogging) {
@@ -60,10 +71,17 @@ fun Application.module(testing: Boolean = false) {
         maxRangeCount = 10
     }
 
+    val users = listOf("shopper1, shopper2, shopper3")
+    val admins = listOf("admin")
+
     install(Authentication) {
-        basic("myBasicAuth") {
-            realm = "Ktor Server"
-            validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
+        basic("bookStoreAuth") {
+            realm = "Book Store"
+            validate {
+                if ((users.contains(it.name) || admins.contains(it.name))
+                    && it.password == "password"
+                ) UserIdPrincipal(it.name) else null
+            }
         }
     }
 
@@ -95,6 +113,13 @@ fun Application.module(testing: Boolean = false) {
 
         get("/") {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+        }
+
+        authenticate("bookStoreAuth") {
+            get("/api/tryauth") {
+                val principal = call.principal<UserIdPrincipal>()
+                call.respondText("Hello ${principal?.name}")
+            }
         }
 
         get("/html-dsl") {
@@ -133,23 +158,6 @@ fun Application.module(testing: Boolean = false) {
             val session = call.sessions.get<MySession>() ?: MySession()
             call.sessions.set(session.copy(count = session.count + 1))
             call.respondText("Counter is ${session.count}. Refresh to increment.")
-        }
-
-        install(StatusPages) {
-            exception<AuthenticationException> { cause ->
-                call.respond(HttpStatusCode.Unauthorized)
-            }
-            exception<AuthorizationException> { cause ->
-                call.respond(HttpStatusCode.Forbidden)
-            }
-
-        }
-
-        authenticate("myBasicAuth") {
-            get("/protected/route/basic") {
-                val principal = call.principal<UserIdPrincipal>()!!
-                call.respondText("Hello ${principal.name}")
-            }
         }
 
         get("/json/gson") {

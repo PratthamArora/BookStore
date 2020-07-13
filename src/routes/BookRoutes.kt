@@ -4,6 +4,7 @@ import com.pratthamarora.data.DataManager
 import com.pratthamarora.data.model.Book
 import com.pratthamarora.data.model.BookListLocation
 import io.ktor.application.call
+import io.ktor.auth.authenticate
 import io.ktor.locations.get
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -13,8 +14,10 @@ fun Route.books() {
 
     val dataManager = DataManager()
 
-    get<BookListLocation>() {
-        call.respond(dataManager.sortedBooks(it.sortBy, it.asc))
+    authenticate("bookStoreAuth") {
+        get<BookListLocation>() {
+            call.respond(dataManager.sortedBooks(it.sortBy, it.asc))
+        }
     }
 
     route("/book") {
