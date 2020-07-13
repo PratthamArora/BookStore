@@ -1,1 +1,1 @@
-curl "http://localhost:8080/book/list?sortBy=price&asc=false"
+curl -v "http://localhost:8080/book/list?sortBy=price&asc=false"
