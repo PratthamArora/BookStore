@@ -1,26 +1,38 @@
 package com.pratthamarora
 
 import com.pratthamarora.routes.books
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.html.*
-import kotlinx.html.*
-import kotlinx.css.*
-import io.ktor.content.*
-import io.ktor.http.content.*
-import io.ktor.sessions.*
-import io.ktor.features.*
-import org.slf4j.event.*
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.*
-import io.ktor.gson.*
-import io.ktor.client.*
-import io.ktor.client.engine.apache.*
-import io.ktor.client.features.json.*
-import io.ktor.client.request.*
-import kotlinx.coroutines.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.apache.Apache
+import io.ktor.client.features.json.GsonSerializer
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.features.CallLogging
+import io.ktor.features.ContentNegotiation
+import io.ktor.features.PartialContent
+import io.ktor.features.StatusPages
+import io.ktor.gson.gson
+import io.ktor.html.respondHtml
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
+import io.ktor.locations.Locations
+import io.ktor.request.path
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.routing
+import io.ktor.sessions.*
+import kotlinx.coroutines.runBlocking
+import kotlinx.css.*
+import kotlinx.html.*
+import org.slf4j.event.Level
+import kotlin.collections.mapOf
+import kotlin.collections.set
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -31,6 +43,10 @@ fun Application.module(testing: Boolean = false) {
         cookie<MySession>("MY_SESSION") {
             cookie.extensions["SameSite"] = "lax"
         }
+    }
+
+    install(Locations){
+
     }
 
     install(CallLogging) {
@@ -53,6 +69,7 @@ fun Application.module(testing: Boolean = false) {
 
     install(ContentNegotiation) {
         gson {
+            setPrettyPrinting()
         }
     }
 
