@@ -1,7 +1,7 @@
 package com.pratthamarora.ui
 
-import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.ui.login.Session
+import com.pratthamarora.utils.Endpoints
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
@@ -24,7 +24,7 @@ class GeneralViewTemplate(val session: Session?) : Template<HTML> {
         }
 
         body {
-            insert(NavigationTemplate(session)){
+            insert(NavigationTemplate(session)) {
                 menuitems {
                     a(classes = "nav-link", href = Endpoints.HOME.url) {
                         +"Home"
@@ -37,8 +37,7 @@ class GeneralViewTemplate(val session: Session?) : Template<HTML> {
                             +"Sign in"
                         }
                     }
-                }
-                else{
+                } else {
                     menuitems {
                         a(classes = "nav-link", href = Endpoints.LOGOUT.url) {
                             +"Sign out"

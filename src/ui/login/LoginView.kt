@@ -1,9 +1,9 @@
 package com.pratthamarora.ui.login
 
-import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.ui.books.BookTemplate
 import com.pratthamarora.ui.home.HomeTemplate
 import com.pratthamarora.utils.Constants
+import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.utils.SecurityHandler
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
@@ -37,8 +37,8 @@ fun Route.loginView() {
     post(Endpoints.DOLOGIN.url) {
         val log = LoggerFactory.getLogger("LoginView")
         val multipart = call.receiveMultipart()
-        var username: String =""
-        var password: String =""
+        var username: String = ""
+        var password: String = ""
         while (true) {
             val part = multipart.readPart() ?: break
             when (part) {
@@ -58,17 +58,18 @@ fun Route.loginView() {
         if (SecurityHandler().isValid(username, password)) {
             call.sessions.set(Constants.COOKIE_NAME.value, Session(username))
             call.respondHtmlTemplate(
-                BookTemplate(call.sessions.get<Session>(),
-                    DataManagerMongoDB.INSTANCE.allBooks())
+                BookTemplate(
+                    call.sessions.get<Session>(),
+                    DataManagerMongoDB.INSTANCE.allBooks()
+                )
             ) {
                 searchfilter {
                     +"You are logged in as $username and a cookie has been created"
                 }
             }
-        }
-        else
-            call.respondHtmlTemplate(LoginTemplate(call.sessions.get<Session>())){
-                greeting{
+        } else
+            call.respondHtmlTemplate(LoginTemplate(call.sessions.get<Session>())) {
+                greeting {
                     +"Username or password was invalid... Try again."
                 }
             }

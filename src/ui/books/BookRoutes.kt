@@ -1,7 +1,7 @@
 package com.pratthamarora.ui.books
 
-import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.ui.login.Session
+import com.pratthamarora.utils.Endpoints
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.content.PartData
@@ -15,18 +15,20 @@ import kotlinx.html.i
 import model.DataManagerMongoDB
 import org.slf4j.LoggerFactory
 
-fun Route.books(){
-    get(Endpoints.BOOKS.url){
+fun Route.books() {
+    get(Endpoints.BOOKS.url) {
         call.respondHtmlTemplate(
-            BookTemplate(call.sessions.get<Session>(),
-            DataManagerMongoDB.INSTANCE.allBooks())
-        ){
+            BookTemplate(
+                call.sessions.get<Session>(),
+                DataManagerMongoDB.INSTANCE.allBooks()
+            )
+        ) {
         }
     }
-    post(Endpoints.DOBOOKSEARCH.url){
+    post(Endpoints.DOBOOKSEARCH.url) {
         val log = LoggerFactory.getLogger("LoginView")
         val multipart = call.receiveMultipart()
-        var search: String =""
+        var search: String = ""
         while (true) {
             val part = multipart.readPart() ?: break
             when (part) {
@@ -39,9 +41,9 @@ fun Route.books(){
             part.dispose()
         }
         val searchBooks = DataManagerMongoDB.INSTANCE.searchBooks(search)
-        call.respondHtmlTemplate(BookTemplate(call.sessions.get<Session>(), searchBooks)){
-            searchfilter{
-                i{
+        call.respondHtmlTemplate(BookTemplate(call.sessions.get<Session>(), searchBooks)) {
+            searchfilter {
+                i {
                     +"Search filter: $search"
                 }
             }

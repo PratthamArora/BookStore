@@ -1,11 +1,11 @@
 package model
 
-import com.pratthamarora.ui.login.Session
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters.*
+import com.pratthamarora.ui.login.Session
 import org.bson.BsonDocument
 import org.bson.Document
 import org.bson.codecs.configuration.CodecRegistries.fromProviders
@@ -14,10 +14,10 @@ import org.bson.codecs.configuration.CodecRegistry
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 
 enum class DataManagerMongoDB {
     INSTANCE;
+
     val log = LoggerFactory.getLogger(DataManagerMongoDB::class.java)
     val database: MongoDatabase
     val bookCollection: MongoCollection<Book>
@@ -41,7 +41,7 @@ enum class DataManagerMongoDB {
         initBooks()
     }
 
-    fun initBooks(){
+    fun initBooks() {
         bookCollection.deleteMany(BsonDocument())
         cartCollection.deleteMany(BsonDocument())
         bookCollection.insertOne(
@@ -121,14 +121,14 @@ enum class DataManagerMongoDB {
         return bookfound!!
     }
 
-    fun allBooks(): List<Book>{
+    fun allBooks(): List<Book> {
         return bookCollection.find().toList()
     }
 
     fun sortedBooks(sortby: String, asc: Boolean): List<Book> {
         val pageno = 1
         val pageSize = 1000
-        val ascint: Int = if(asc) 1 else -1
+        val ascint: Int = if (asc) 1 else -1
         return bookCollection
             .find()
             .sort(Document(mapOf(Pair(sortby, ascint), Pair("_id", -1))))
@@ -141,20 +141,20 @@ enum class DataManagerMongoDB {
         return bookCollection
             .find(
                 or(
-                regex("title", ".*$str.*"),
-                regex("author", ".*$str.*")
+                    regex("title", ".*$str.*"),
+                    regex("author", ".*$str.*")
                 )
-                )
+            )
             .sort(Document(mapOf(Pair("title", 1), Pair("_id", -1))))
             .toList()
     }
 
-    fun updateCart(cart: Cart){
+    fun updateCart(cart: Cart) {
         val replaceOne = cartCollection.replaceOne(eq("username", cart.username), cart)
         log.info("Update result: $replaceOne")
     }
 
-    fun addBook(session: Session?, book: Book){
+    fun addBook(session: Session?, book: Book) {
         val cartForUser = cartForUser(session)
         cartForUser.addBook(book)
         updateCart(cartForUser)
@@ -166,12 +166,11 @@ enum class DataManagerMongoDB {
         val find = cartCollection.find(eq("username", session.username))
 
 
-        if (find.count() == 0){
-            val cart = Cart(username=session.username)
+        if (find.count() == 0) {
+            val cart = Cart(username = session.username)
             cartCollection.insertOne(cart)
             return cart
-        }
-        else
+        } else
             return find.first()
     }
 

@@ -1,8 +1,8 @@
 package com.pratthamarora.ui.books
 
 import com.pratthamarora.ui.GeneralViewTemplate
-import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.ui.login.Session
+import com.pratthamarora.utils.Endpoints
 import io.ktor.html.Placeholder
 import io.ktor.html.Template
 import io.ktor.html.insert
@@ -74,7 +74,7 @@ class BookTemplate(val session: Session?, val books: List<Book>) : Template<HTML
                                                 +"Add to cart"
                                             }
                                             input(type = InputType.hidden, name = "bookid") {
-                                                value="${it.id}"
+                                                value = "${it.id}"
                                             }
                                         }
                                     }

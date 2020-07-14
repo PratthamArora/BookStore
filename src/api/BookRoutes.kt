@@ -11,7 +11,7 @@ import model.DataManagerMongoDB
 @Location("/api/book/list")
 data class BookListLocation(val sortby: String, val asc: Boolean)
 
-fun Route.booksapi(){
+fun Route.booksapi() {
     authenticate("bookStoreAuth") {
         get<BookListLocation>() {
             call.respond(DataManagerMongoDB.INSTANCE.sortedBooks(it.sortby, it.asc))

@@ -16,7 +16,7 @@ class LoginSuccesfullTemplate(val session: Session?) : Template<HTML> {
                     h2() {
                         +"You have been logged in!"
                     }
-                    p{
+                    p {
                         insert(greeting)
                     }
                 }

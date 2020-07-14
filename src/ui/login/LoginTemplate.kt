@@ -18,7 +18,7 @@ class LoginTemplate(val session: Session?) : Template<HTML> {
                     h2() {
                         +"Welcome to the \"Bookstore\""
                     }
-                    p{
+                    p {
                         insert(greeting)
                     }
                 }

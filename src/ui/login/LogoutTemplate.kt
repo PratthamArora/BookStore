@@ -3,7 +3,9 @@ package com.pratthamarora.ui.login
 import com.pratthamarora.ui.GeneralViewTemplate
 import io.ktor.html.Template
 import io.ktor.html.insert
-import kotlinx.html.*
+import kotlinx.html.HTML
+import kotlinx.html.div
+import kotlinx.html.h2
 
 class LogoutTemplate(val session: Session?) : Template<HTML> {
     val basicTemplate: GeneralViewTemplate = GeneralViewTemplate(session)

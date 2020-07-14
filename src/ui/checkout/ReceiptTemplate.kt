@@ -1,12 +1,12 @@
 package com.pratthamarora.ui.checkout
 
 import com.pratthamarora.ui.GeneralViewTemplate
-import model.Cart
-import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.ui.login.Session
+import com.pratthamarora.utils.Endpoints
 import io.ktor.html.Template
 import io.ktor.html.insert
 import kotlinx.html.*
+import model.Cart
 
 class ReceiptTemplate(val session: Session?, val cart: Cart) : Template<HTML> {
     val basicTemplate: GeneralViewTemplate = GeneralViewTemplate(session)

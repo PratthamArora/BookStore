@@ -4,7 +4,10 @@ import com.pratthamarora.ui.GeneralViewTemplate
 import com.pratthamarora.ui.login.Session
 import io.ktor.html.Template
 import io.ktor.html.insert
-import kotlinx.html.*
+import kotlinx.html.HTML
+import kotlinx.html.div
+import kotlinx.html.h2
+import kotlinx.html.p
 
 class HomeTemplate(val session: Session?) : Template<HTML> {
     val basicTemplate: GeneralViewTemplate = GeneralViewTemplate(session)
@@ -15,10 +18,10 @@ class HomeTemplate(val session: Session?) : Template<HTML> {
                     h2() {
                         +"Welcome to the Bookstore"
                     }
-                    p{
+                    p {
                         +"- We have many good deals on a lot of different topics"
                     }
-                    p{
+                    p {
                         +"Let us know if you are looking for something that we do not currently have."
                     }
                 }

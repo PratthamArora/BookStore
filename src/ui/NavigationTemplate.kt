@@ -1,7 +1,7 @@
 package com.pratthamarora.ui
 
-import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.ui.login.Session
+import com.pratthamarora.utils.Endpoints
 import io.ktor.html.PlaceholderList
 import io.ktor.html.Template
 import io.ktor.html.each
@@ -32,16 +32,16 @@ class NavigationTemplate(val session: Session?) : Template<FlowContent> {
                     ul(classes = "navbar-nav mr-auto") {
                         each(menuitems) {
                             li {
-                                    insert(it)
+                                insert(it)
                             }
                         }
                     }
                 }
-                div(classes=""){
-                    if (session != null){
+                div(classes = "") {
+                    if (session != null) {
                         val cartForUser = DataManagerMongoDB.INSTANCE.cartForUser(session)
-                        form(action= Endpoints.CART.url){
-                            button(classes="btn btn-danger", type=ButtonType.submit){
+                        form(action = Endpoints.CART.url) {
+                            button(classes = "btn btn-danger", type = ButtonType.submit) {
                                 +"Items in cart: ${cartForUser?.qtyTotal}, total price: ${cartForUser?.sum}"
                             }
                         }

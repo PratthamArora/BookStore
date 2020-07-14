@@ -1,8 +1,8 @@
 package com.pratthamarora.ui.cart
 
-import com.pratthamarora.utils.Endpoints
 import com.pratthamarora.ui.books.BookTemplate
 import com.pratthamarora.ui.login.Session
+import com.pratthamarora.utils.Endpoints
 import io.ktor.application.call
 import io.ktor.html.respondHtmlTemplate
 import io.ktor.http.content.PartData
