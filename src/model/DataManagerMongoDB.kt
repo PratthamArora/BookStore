@@ -1,12 +1,11 @@
-package com.pratthamarora.data
+package model
 
-
+import com.pratthamarora.ui.login.Session
 import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters.*
-import com.pratthamarora.data.model.Book
 import org.bson.BsonDocument
 import org.bson.Document
 import org.bson.codecs.configuration.CodecRegistries.fromProviders
@@ -15,13 +14,14 @@ import org.bson.codecs.configuration.CodecRegistry
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.bson.types.ObjectId
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 
-  class DataManagerMongoDB {
-
+enum class DataManagerMongoDB {
+    INSTANCE;
     val log = LoggerFactory.getLogger(DataManagerMongoDB::class.java)
     val database: MongoDatabase
     val bookCollection: MongoCollection<Book>
-//    val cartCollection: MongoCollection<Cart>
+    val cartCollection: MongoCollection<Cart>
 
     init {
         val pojoCodecRegistry: CodecRegistry = fromProviders(PojoCodecProvider.builder().automatic(true).build())
@@ -37,13 +37,13 @@ import org.slf4j.LoggerFactory
         val mongoClient = MongoClients.create(clientSettings)
         database = mongoClient.getDatabase("development");
         bookCollection = database.getCollection(Book::class.java.simpleName, Book::class.java)
-//        cartCollection = database.getCollection(Cart::class.java.simpleName, Cart::class.java)
+        cartCollection = database.getCollection(Cart::class.java.simpleName, Cart::class.java)
         initBooks()
     }
 
-    fun initBooks() {
+    fun initBooks(){
         bookCollection.deleteMany(BsonDocument())
-//        cartCollection.deleteMany(BsonDocument())
+        cartCollection.deleteMany(BsonDocument())
         bookCollection.insertOne(
             Book(
                 null,
@@ -121,14 +121,14 @@ import org.slf4j.LoggerFactory
         return bookfound!!
     }
 
-    fun allBooks(): List<Book> {
+    fun allBooks(): List<Book>{
         return bookCollection.find().toList()
     }
 
     fun sortedBooks(sortby: String, asc: Boolean): List<Book> {
         val pageno = 1
         val pageSize = 1000
-        val ascint: Int = if (asc) 1 else -1
+        val ascint: Int = if(asc) 1 else -1
         return bookCollection
             .find()
             .sort(Document(mapOf(Pair(sortby, ascint), Pair("_id", -1))))
@@ -141,48 +141,48 @@ import org.slf4j.LoggerFactory
         return bookCollection
             .find(
                 or(
-                    regex("title", ".*$str.*"),
-                    regex("author", ".*$str.*")
+                regex("title", ".*$str.*"),
+                regex("author", ".*$str.*")
                 )
-            )
+                )
             .sort(Document(mapOf(Pair("title", 1), Pair("_id", -1))))
             .toList()
     }
 
-//    fun updateCart(cart:Cart){
-//        val replaceOne = cartCollection.replaceOne(eq("username", cart.username), cart)
-//        log.info("Update result: $replaceOne")
-//    }
+    fun updateCart(cart: Cart){
+        val replaceOne = cartCollection.replaceOne(eq("username", cart.username), cart)
+        log.info("Update result: $replaceOne")
+    }
 
-//    fun addBook(session: Session?, book: Book){
-//        val cartForUser = cartForUser(session)
-//        cartForUser.addBook(book)
-//        updateCart(cartForUser)
-//    }
+    fun addBook(session: Session?, book: Book){
+        val cartForUser = cartForUser(session)
+        cartForUser.addBook(book)
+        updateCart(cartForUser)
+    }
 
-//    fun cartForUser(session: Session?): Cart{
-//        if (session == null)
-//            throw IllegalArgumentException("Session is null")
-//        val find = cartCollection.find(eq("username", session.username))
-//
-//
-//        if (find.count() == 0){
-//            val cart = Cart(username=session.username)
-//            cartCollection.insertOne(cart)
-//            return cart
-//        }
-//        else
-//            return find.first()
-//    }
+    fun cartForUser(session: Session?): Cart {
+        if (session == null)
+            throw IllegalArgumentException("Session is null")
+        val find = cartCollection.find(eq("username", session.username))
+
+
+        if (find.count() == 0){
+            val cart = Cart(username=session.username)
+            cartCollection.insertOne(cart)
+            return cart
+        }
+        else
+            return find.first()
+    }
 
     fun getBookWithId(bookid: String): Book {
         log.info("Get book with id: $bookid")
         return bookCollection.find(eq("_id", ObjectId(bookid))).first()
     }
 
-//    fun removeBook(session: Session?, book: Book) {
-//        val cartForUser = cartForUser(session)
-//        cartForUser.removeBook(book)
-//        updateCart(cartForUser)
-//    }
+    fun removeBook(session: Session?, book: Book) {
+        val cartForUser = cartForUser(session)
+        cartForUser.removeBook(book)
+        updateCart(cartForUser)
+    }
 }
